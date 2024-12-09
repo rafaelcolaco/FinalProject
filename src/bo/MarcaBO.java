@@ -3,12 +3,22 @@ package bo;
 import dao.MarcaDAO;
 import dto.MarcaDTO;
 
-import java.sql.SQLException;
+import java.util.List;
 
 public class MarcaBO {
-    private MarcaDAO marcaDAO = new MarcaDAO();
+    private final MarcaDAO marcaDAO;
 
-    public void salvar(MarcaDTO marca) throws SQLException {
-        marcaDAO.inserir(marca);
+    public MarcaBO(MarcaDAO marcaDAO) {
+        this.marcaDAO = marcaDAO;
+    }
+
+    public boolean salvarMarca(String nome) {
+        MarcaDTO marca = new MarcaDTO();
+        marca.setNome(nome);
+        return marcaDAO.salvar(marca);
+    }
+
+    public List<MarcaDTO> listarMarcas() {
+        return marcaDAO.listar();
     }
 }

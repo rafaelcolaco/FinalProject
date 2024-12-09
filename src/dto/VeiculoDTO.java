@@ -1,16 +1,18 @@
 package dto;
 
-public class VeiculoDTO extends MarcaDTO {
-    private int veiculoId;
+public class VeiculoDTO {
+    private int id;
     private String modelo;
     private double preco;
+    private int marcaId;
+    private String marcaNome;
 
-    public int getVeiculoId() {
-        return veiculoId;
+    public int getId() {
+        return id;
     }
 
-    public void setVeiculoId(int veiculoId) {
-        this.veiculoId = veiculoId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getModelo() {
@@ -27,5 +29,21 @@ public class VeiculoDTO extends MarcaDTO {
 
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    public int getMarcaId() {
+        return marcaId;
+    }
+
+    public void setMarcaId(int marcaId) {
+        this.marcaId = marcaId;
+    }
+
+    public String getMarcaNome() {
+        return marcaNome;
+    }
+
+    public void setMarcaNome(String marcaNome) {
+        this.marcaNome = marcaNome;
     }
 }

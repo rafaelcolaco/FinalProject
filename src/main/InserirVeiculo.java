@@ -1,23 +1,38 @@
 package main;
 
-import controller.VeiculoController;
+import bo.VeiculoBO;
+import dao.VeiculoDAO;
+import conexao.Conexao;
 
 import java.util.Scanner;
+import java.sql.Connection;
 
 public class InserirVeiculo {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Digite o modelo do veículo:");
-        String modelo = scanner.nextLine();
 
-        System.out.println("Digite o preço do veículo:");
-        double preco = scanner.nextDouble();
+        try (Connection connection = Conexao.conectar()) {
+            VeiculoDAO veiculoDAO = new VeiculoDAO(connection);
+            VeiculoBO veiculoBO = new VeiculoBO(veiculoDAO);
 
-        System.out.println("Digite o ID da marca:");
-        int marcaId = scanner.nextInt();
+            System.out.print("Digite o modelo do veículo: ");
+            String modeloVeiculo = scanner.nextLine();
 
-        VeiculoController veiculoController = new VeiculoController();
-        veiculoController.inserirVeiculo(modelo, preco, marcaId);
-        scanner.close();
+            System.out.print("Digite o preço do veículo: ");
+            double precoVeiculo = scanner.nextDouble();
+
+            System.out.print("Digite o ID da marca do veículo: ");
+            int marcaId = scanner.nextInt();
+
+            if (veiculoBO.salvarVeiculo(modeloVeiculo, precoVeiculo, marcaId)) {
+                System.out.println("Veículo inserido com sucesso!");
+            } else {
+                System.out.println("Erro ao inserir o veículo.");
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao conectar com o banco de dados: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
     }
 }
