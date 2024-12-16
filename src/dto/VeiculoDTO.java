@@ -4,8 +4,8 @@ public class VeiculoDTO {
     private int id;
     private String modelo;
     private double preco;
-    private int marcaId;
-    private String marcaNome;
+    private boolean pcd;
+    private int marcaId; 
 
     public int getId() {
         return id;
@@ -31,19 +31,19 @@ public class VeiculoDTO {
         this.preco = preco;
     }
 
+    public boolean isPcd() {
+        return pcd;
+    }
+
+    public void setPcd(boolean pcd) {
+        this.pcd = pcd;
+    }
+
     public int getMarcaId() {
         return marcaId;
     }
 
     public void setMarcaId(int marcaId) {
         this.marcaId = marcaId;
-    }
-
-    public String getMarcaNome() {
-        return marcaNome;
-    }
-
-    public void setMarcaNome(String marcaNome) {
-        this.marcaNome = marcaNome;
     }
 }

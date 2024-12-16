@@ -1,10 +1,8 @@
 package dao;
 
 import dto.VeiculoDTO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,40 +13,66 @@ public class VeiculoDAO {
         this.connection = connection;
     }
 
-    public boolean salvar(VeiculoDTO veiculoDTO) {
-        String sql = "INSERT INTO veiculo (modelo, preco, marca_id) VALUES (?, ?, ?)";
+    public boolean salvar(VeiculoDTO veiculo) {
+        String sql = "INSERT INTO veiculo (modelo, preco, marca_id, pcd) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, veiculoDTO.getModelo());
-            stmt.setDouble(2, veiculoDTO.getPreco());
-            stmt.setInt(3, veiculoDTO.getMarcaId());
-
+            stmt.setString(1, veiculo.getModelo());   
+            stmt.setDouble(2, veiculo.getPreco());   
+            stmt.setInt(3, veiculo.getMarcaId());   
+            stmt.setBoolean(4, veiculo.isPcd());  
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            return rowsAffected > 0; 
         } catch (SQLException e) {
-            System.out.println("Erro ao salvar veículo: " + e.getMessage());
-            return false;
+            System.out.println("Erro ao salvar o veículo: " + e.getMessage());
+            return false; 
         }
     }
 
     public List<VeiculoDTO> listar() {
+        String sql = "SELECT * FROM veiculo";
         List<VeiculoDTO> veiculos = new ArrayList<>();
-        String sql = "SELECT v.id, v.modelo, v.preco, m.nome AS marca_nome FROM veiculo v JOIN marca m ON v.marca_id = m.id";
-        
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-             
             while (rs.next()) {
-                VeiculoDTO veiculoDTO = new VeiculoDTO();
-                veiculoDTO.setId(rs.getInt("id"));
-                veiculoDTO.setModelo(rs.getString("modelo"));
-                veiculoDTO.setPreco(rs.getDouble("preco"));
-                veiculoDTO.setMarcaNome(rs.getString("marca_nome"));
-                veiculos.add(veiculoDTO);
+                VeiculoDTO veiculo = new VeiculoDTO();
+                veiculo.setId(rs.getInt("id"));
+                veiculo.setModelo(rs.getString("modelo"));
+                veiculo.setPreco(rs.getDouble("preco"));
+                veiculo.setPcd(rs.getBoolean("pcd"));
+                veiculos.add(veiculo);
             }
         } catch (SQLException e) {
             System.out.println("Erro ao listar veículos: " + e.getMessage());
         }
-
         return veiculos;
     }
+
+    public boolean atualizar(VeiculoDTO veiculo) {
+        String sql = "UPDATE veiculo SET modelo = ?, preco = ?, pcd = ? WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, veiculo.getModelo());
+            stmt.setDouble(2, veiculo.getPreco());
+            stmt.setBoolean(3, veiculo.isPcd());
+            stmt.setInt(4, veiculo.getId());
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar veículo: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean excluir(int id) {
+        String sql = "DELETE FROM veiculo WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao excluir veículo: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    
 }
